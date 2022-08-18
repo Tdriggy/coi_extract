@@ -29,14 +29,4 @@ class XpathMap:
                      'wc_insurer': '/html/body/div[4]/div[2]/div/div[2]/div/div[2]/div/div/div/records-modal-lwc-detail-panel-wrapper/records-record-layout-event-broker/slot/records-lwc-detail-panel/records-base-record-form/div/div/div/div/records-lwc-record-layout/forcegenerated-detailpanel_certificate_of_insurance__c___012f1000000n7xuaaq___full___create___recordlayout2/records-record-layout-block/slot/records-record-layout-section[5]/div/div/div/slot/records-record-layout-row[11]/slot/records-record-layout-item[1]/div/span/slot/records-record-layout-base-input/lightning-input/div/input'
                      }
 
-    def select_map(self, opperation_type):
-        if opperation_type == 1:
-            print('YES')
 
-    def determine_type(self):
-        return 1
-
-
-x = XpathMap()
-type = x.determine_type()
-x.select_map(type)
