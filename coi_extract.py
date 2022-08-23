@@ -17,6 +17,8 @@ class AccordReader:
     def __init__(self, file_name):
         self.file_name = file_name
         self.url = clipboard.paste()
+        self.pdf = pdfquery.PDFQuery(self.file_name)
+        self.pdf.load(0)
 
     coordinate_dict = {'insurer_a':        (4.82, 8.42, 7.03, 8.52),
                        'insurer_b':        (4.82, 8.27, 7.03, 8.37),
@@ -24,27 +26,27 @@ class AccordReader:
                        'insurer_d':        (4.82, 7.94, 7.03, 8.04),
                        'insurer_e':        (4.82, 7.77, 7.03, 7.87),
                        'insurer_f':        (4.82, 7.69, 7.03, 7.70),
-                       'gl_pol_number':    (2.95, 5.58, 4.58, 6.73),
+                       'gl_pol_number':    (2.95, 5.75, 4.58, 6.73),
                        'gl_eff_date':      (4.85, 5.84, 4.98, 6.70),
-                       'gl_exp_date':      (5.25, 5.58, 5.80, 6.70),
+                       'gl_exp_date':      (5.25, 5.84, 5.80, 6.70),
                        'gl_each_occur':    (7.37, 6.73, 8.17, 6.76),
                        'gl_op_agg':        (7.27, 5.74, 8.24, 5.90),
                        'gl_insurer':       (0.27, 5.91, 0.45, 6.69),
-                       'al_pol_number':    (2.95, 4.74, 4.58, 5.57),
-                       'al_eff_date':      (4.61, 4.73, 5.25, 5.57),
-                       'al_exp_date':      (5.25, 4.73, 5.90, 5.57),
+                       'al_pol_number':    (2.95, 4.90, 4.58, 5.57),
+                       'al_eff_date':      (4.61, 4.90, 5.25, 5.57),
+                       'al_exp_date':      (5.25, 4.90, 5.90, 5.57),
                        'al_comb_limit':    (7.29, 5.40, 8.25, 5.57),
                        'al_insurer':       (0.27, 5.07, 0.43, 5.53),
-                       'umb_pol_number':   (2.95, 4.24, 4.61, 4.73),
-                       'umb_eff_date':     (4.61, 4.23, 5.25, 4.73),
-                       'umb_exp_date':     (5.25, 4.23, 5.90, 4.73),
+                       'umb_pol_number':   (2.95, 4.40, 4.61, 4.73),
+                       'umb_eff_date':     (4.61, 4.40, 5.25, 4.73),
+                       'umb_exp_date':     (5.25, 4.40, 5.90, 4.73),
                        'umb_each_occur':   (7.51, 4.71, 8.15, 4.77),
                        'umb_insurer':      (0.27, 4.41, 0.44, 4.70),
-                       'wc_pol_number:':   (3.00, 3.64, 4.52, 4.18),
-                       'wc_eff_date':      (4.60, 3.67, 5.25, 4.24),
-                       'wc_exp_date':      (5.26, 3.92, 5.90, 4.23),
-                       'wc_each_acci':     (7.31, 3.92, 8.25, 4.07),
-                       'wc_each_emp':      (7.31, 3.77, 8.24, 3.90),
+                       'wc_pol_number:':   (3.00, 3.64, 4.52, 4.24),
+                       'wc_eff_date':      (4.60, 3.80, 5.25, 4.24),
+                       'wc_exp_date':      (5.26, 3.80, 5.90, 4.24),
+                       'wc_each_acci':     (7.31, 4.00, 8.25, 4.07),
+                       'wc_each_emp':      (7.31, 3.85, 8.24, 3.90),
                        'wc_pol_limit':     (7.43, 3.74, 8.12, 3.76),
                        'wc_insurer':       (0.28, 3.84, 0.43, 4.19),
                        }
@@ -239,15 +241,14 @@ class AccordReader:
         else:
             raise Exception('Unable to determine type')
 
-    def pdf_extract_setup(self):
-        global pdf
-        pdf = pdfquery.PDFQuery(self.file_name)
-        pdf.load(0)
+    #def pdf_extract_setup(self):
+        #global pdf
+        #pdf = pdfquery.PDFQuery(self.file_name)
+        #pdf.load(0)
 
-    @staticmethod
-    def pdf_extract(x1, y1, x2, y2):
+    def pdf_extract(self, x1, y1, x2, y2):
         coordinates = (x1 * 72, y1 * 72, x2 * 72, y2 * 72)
-        extracted_text = pdf.pq('LTTextLineHorizontal:overlaps_bbox("%d, %d, %d, %d")' % coordinates).text()
+        extracted_text = self.pdf.pq('LTTextLineHorizontal:overlaps_bbox("%d, %d, %d, %d")' % coordinates).text()
         return extracted_text
 
     def extract_text(self, xpath_map_arg):
@@ -463,6 +464,9 @@ class AccordReader:
 
     def get_wc_eff_date(self, coordinates, xpath_map_arg):
         wc_eff_date = self.pdf_extract(coordinates[0], coordinates[1], coordinates[2], coordinates[3])
+        multi_check = wc_eff_date.split()
+        if len(multi_check) > 1:
+            wc_eff_date = multi_check[0]
         print('WC Eff Date: ' + wc_eff_date)
         wc_eff_date_element = driver.find_element(By.XPATH, xpath_map_arg['wc_eff_date'])
         wc_eff_date_element.clear()
@@ -470,6 +474,9 @@ class AccordReader:
 
     def get_wc_exp_date(self, coordinates, xpath_map_arg):
         wc_exp_date = self.pdf_extract(coordinates[0], coordinates[1], coordinates[2], coordinates[3])
+        multi_check = wc_exp_date.split()
+        if len(multi_check) > 1:
+            wc_eff_date = multi_check[0]
         print('WC Exp Date: ' + wc_exp_date)
         wc_exp_date_element = driver.find_element(By.XPATH, xpath_map_arg['wc_exp_date'])
         wc_exp_date_element.clear()
@@ -517,6 +524,6 @@ if __name__ == '__main__':
     reader.access_riskonnect()
     operation_type = reader.determine_type()
     xpath_map = reader.create_map(operation_type)
-    reader.pdf_extract_setup()
+    #reader.pdf_extract_setup()
     reader.extract_text(xpath_map)
     print()
