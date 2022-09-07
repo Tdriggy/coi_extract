@@ -58,8 +58,8 @@ class AccordExtractor:
 
     def chromedriver_setup(self):
         my_options = webdriver.ChromeOptions()
-        my_options.add_argument('user-data-dir=C:/Users/driggerst/Python/coi_extract/User Data')
-        driver_setup = webdriver.Chrome(options=my_options, executable_path='C:/Users/driggerst/Python/coi_extract/chromedriver.exe')
+        my_options.add_argument('user-data-dir=C:/Users/Tyler/ProgramingProjects/coi_extract/User Data')
+        driver_setup = webdriver.Chrome(options=my_options, executable_path='C:/Users/Tyler/ProgramingProjects/coi_extract/chromedriver.exe')
         return driver_setup
 
     # noinspection PyBroadException

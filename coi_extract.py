@@ -8,7 +8,7 @@ from accord_extractor import AccordExtractor
 if __name__ == '__main__':
     try:
         print()
-        files_in_downloads = glob. glob('C:/Users/driggerst/Downloads/*.pdf')
+        files_in_downloads = glob. glob('C:/Users/Tyler/Downloads/*.pdf')
         most_recent_file = max(files_in_downloads, key=os. path. getctime)
         extractor = AccordExtractor(most_recent_file)
         extractor.access_riskonnect()
